@@ -1,0 +1,30 @@
+/**
+ * Editor-specific styles.
+ */
+ .dhe-editor-unification-modal-container {
+
+	.components-modal__content {
+
+		> div:not(.components-modal__header) {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+		}
+	}
+}
+
+.dhe-editor-unification-post-editor-button {
+	background-color: #E2FFED;
+}
+
+.dhe-editor-unification-site-editor-button {
+	background-color: #ECEFFD;
+}
+
+.dhe-editor-unification-unified-button {
+	background-color: #FFFDD6;
+}
+
+.dhe-editor-unification-unified-button-6-6 {
+	background-color: #FFE9DE;
+}
