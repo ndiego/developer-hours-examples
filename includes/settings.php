@@ -122,7 +122,7 @@ function dhe_register_settings() {
 		array(
 			'label' => sprintf(
 				__( 'Enable example patterns that showcase the used of block locking, <code>contentOnly</code>, and <code>allowedBlocks</code>. <a href="%s" target="_blank">View source code</a>.', 'developer-hours-examples' ),
-				esc_url( 'https://github.com/ndiego/developer-hours-examples/tree/main/src/examples/patterns/index.php' )
+				esc_url( 'https://github.com/ndiego/developer-hours-examples/tree/main/includes/examples/patterns/index.php' )
 			),
 			'id'    => 'dhe-patterns',
 		)
