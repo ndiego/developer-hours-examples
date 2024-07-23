@@ -5,8 +5,12 @@
  * @package DeveloperHoursExamples
  */
 
-if ( dhe_is_example_enabled( 'example' ) ) {
-	//include_once( plugin_dir_path( __FILE__ ) . 'examples/example.php' );
+if ( dhe_is_example_enabled( 'dhe-patterns' ) ) {
+	include_once( plugin_dir_path( __FILE__ ) . 'examples/patterns/index.php' );
+}
+
+if ( dhe_is_example_enabled( 'dhe-extending-blocks' ) ) {
+	include_once( plugin_dir_path( __FILE__ ) . 'examples/extending-blocks/index.php' );
 }
 
 /**

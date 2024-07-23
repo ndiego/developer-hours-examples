@@ -101,6 +101,33 @@ function dhe_register_settings() {
 		)
 	);
 
+	add_settings_section(
+		'dhe_patterns',
+		__( 'Patterns', 'developer-hours-examples' ),
+		function() { 
+			echo sprintf(
+				__( 'Pattern examples from <a href="%s" target="_blank">Developer Hours: Do you really need a custom block? Let’s explore alternatives</a>.', 'developer-hours-examples' ),
+				esc_url( 'https://www.meetup.com/learn-wordpress-online-workshops/events/301860423/' )
+			); 
+		},
+		'developer-hours-examples'
+	);
+
+	add_settings_field(
+		'dhe-editor-unification-post-editor-slot',
+		__( 'Patterns', 'developer-hours-examples' ),
+		'dhe_display_example_field',
+		'developer-hours-examples',
+		'dhe_patterns',
+		array(
+			'label' => sprintf(
+				__( 'Enable example patterns that showcase the used of block locking, <code>contentOnly</code>, and <code>allowedBlocks</code>. <a href="%s" target="_blank">View source code</a>.', 'developer-hours-examples' ),
+				esc_url( 'https://github.com/ndiego/developer-hours-examples/tree/main/src/examples/patterns/index.php' )
+			),
+			'id'    => 'dhe-patterns',
+		)
+	);
+
 	register_setting( 'developer-hours-examples', 'developer-hours-examples' );
 }
 add_action( 'admin_init', 'dhe_register_settings' );
