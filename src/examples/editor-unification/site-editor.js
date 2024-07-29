@@ -52,21 +52,21 @@ function EditorUnificationSiteEditorSlot() {
 						selected={ radioValue }
 						options={ [
 							{
-								label:  __(
+								label: __(
 									'Option A',
 									'developer-hours-examples'
 								),
 								value: 'a',
 							},
 							{
-								label:  __(
+								label: __(
 									'Option B',
 									'developer-hours-examples'
 								),
 								value: 'b',
 							},
 							{
-								label:  __(
+								label: __(
 									'Option C',
 									'developer-hours-examples'
 								),
@@ -87,28 +87,28 @@ function EditorUnificationSiteEditorSlot() {
 						options={ [
 							{
 								disabled: true,
-								label:  __(
+								label: __(
 									'Select an Option',
 									'developer-hours-examples'
 								),
 								value: '',
 							},
 							{
-								label:  __(
+								label: __(
 									'Option A',
 									'developer-hours-examples'
 								),
 								value: 'a',
 							},
 							{
-								label:  __(
+								label: __(
 									'Option B',
 									'developer-hours-examples'
 								),
 								value: 'b',
 							},
 							{
-								label:  __(
+								label: __(
 									'Option C',
 									'developer-hours-examples'
 								),

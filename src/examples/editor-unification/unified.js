@@ -13,7 +13,7 @@ import { useState } from '@wordpress/element';
 import { settings } from '@wordpress/icons';
 import { PluginMoreMenuItem as PostEditorPluginMoreMenuItem } from '@wordpress/edit-post'; // Slot for the Post Editor
 import { PluginMoreMenuItem as SiteEditorPluginMoreMenuItem } from '@wordpress/edit-site'; // Slot for the Site Editor
-import { PluginMoreMenuItem as UnifiedPluginMoreMenuItem } from '@wordpress/editor';       // Slot for the unified Editor
+import { PluginMoreMenuItem as UnifiedPluginMoreMenuItem } from '@wordpress/editor'; // Slot for the unified Editor
 
 /**
  * Adds a sidebar button in the Editor that toggles the demo Plugin Settings modal.
@@ -82,21 +82,21 @@ function EditorUnificationUnifiedSlot() {
 						selected={ radioValue }
 						options={ [
 							{
-								label:  __(
+								label: __(
 									'Option A',
 									'developer-hours-examples'
 								),
 								value: 'a',
 							},
 							{
-								label:  __(
+								label: __(
 									'Option B',
 									'developer-hours-examples'
 								),
 								value: 'b',
 							},
 							{
-								label:  __(
+								label: __(
 									'Option C',
 									'developer-hours-examples'
 								),
@@ -117,28 +117,28 @@ function EditorUnificationUnifiedSlot() {
 						options={ [
 							{
 								disabled: true,
-								label:  __(
+								label: __(
 									'Select an Option',
 									'developer-hours-examples'
 								),
 								value: '',
 							},
 							{
-								label:  __(
+								label: __(
 									'Option A',
 									'developer-hours-examples'
 								),
 								value: 'a',
 							},
 							{
-								label:  __(
+								label: __(
 									'Option B',
 									'developer-hours-examples'
 								),
 								value: 'b',
 							},
 							{
-								label:  __(
+								label: __(
 									'Option C',
 									'developer-hours-examples'
 								),
