@@ -308,7 +308,7 @@ function dhe_register_pattern_content_only_custom() {
 		array(
 			'title'       => __( 'Card (Content Only - Custom)', 'developer-hours-examples' ),
 			'description' => _x( 'A simple card design with content-only editing enabled and a custom block.', 'Block pattern description', 'developer-hours-examples' ),
-			'categories'  => array( 'developer-hours' ),
+			'categories'  => array( 'test' ),
 			'content'     => sprintf(
 				$pattern_content,
 				esc_url( $image_url ),
