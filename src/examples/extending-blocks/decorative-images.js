@@ -6,12 +6,37 @@ import { addFilter } from '@wordpress/hooks';
 import { InspectorControls } from '@wordpress/block-editor';
 import {
 	PanelBody,
-	BaseControl,
 	PanelRow,
 	ToggleControl,
 	ExternalLink,
 } from '@wordpress/components';
-import { Children, cloneElement } from '@wordpress/element';
+import { Children, cloneElement, isValidElement } from '@wordpress/element';
+
+/**
+ * Adds a custom 'isDecorative' attribute to all Image blocks.
+ *
+ * This attribute is used to indicate whether an image is decorative,
+ * allowing developers to specify if an image should be ignored by
+ * assistive technologies. The attribute is a boolean with a default value of 'false'.
+ *
+ * @param {Object} settings The block settings for the registered block type.
+ * @return {Object}         The modified block settings with the added attribute.
+ */
+function addIsDecorativeAttribute( settings ) {
+
+	// Only add attribute to Image blocks.
+	if ( settings.name === 'core/image' ) {
+		settings.attributes = {
+			...settings.attributes,
+			isDecorative: {
+				type: 'boolean',
+				default: false,
+			},
+		};
+	}
+
+	return settings;
+}
 
 /**
  * Filter the BlockEdit object and add the "Is Decorative" toggle to Image blocks.
@@ -21,12 +46,33 @@ import { Children, cloneElement } from '@wordpress/element';
  */
 function addImageInspectorControls( BlockEdit ) {
 	return ( props ) => {
-		if ( props.name !== 'core/image' ) {
+		const { name, attributes, setAttributes } = props;
+
+		// Early return if the block is not the Image block.
+		if ( name !== 'core/image' ) {
 			return <BlockEdit { ...props } />;
 		}
 
-		const { attributes, setAttributes } = props;
-		const { isDecorative } = attributes;
+		const { alt, isDecorative } = attributes;
+
+		const helpText = (
+			<>
+				{ __(
+					"Decorative images don't add information to the content of a page. Enabling removes alternative text and sets the image's role to presentation. ",
+					'developer-hours-examples'
+				) }
+				<ExternalLink
+					href={
+						'https://www.w3.org/WAI/tutorials/images/decorative/'
+					}
+				>
+					{ __(
+						'Learn more.',
+						'developer-hours-examples'
+					) }
+				</ExternalLink>
+			</>
+		);
 
 		return (
 			<>
@@ -48,26 +94,10 @@ function addImageInspectorControls( BlockEdit ) {
 								onChange={ () => {
 									setAttributes( {
 										isDecorative: ! isDecorative,
+										alt: ! isDecorative ? '' : alt,
 									} );
 								} }
-								help={
-									<>
-										{ __(
-											"Decorative images don't add information to the content of a page. ",
-											'developer-hours-examples'
-										) }
-										<ExternalLink
-											href={
-												'https://www.w3.org/WAI/tutorials/images/decorative/'
-											}
-										>
-											{ __(
-												'Learn more.',
-												'developer-hours-examples'
-											) }
-										</ExternalLink>
-									</>
-								}
+								help={ helpText }
 							/>
 						</PanelRow>
 					</PanelBody>
@@ -77,47 +107,6 @@ function addImageInspectorControls( BlockEdit ) {
 	};
 }
 
-addFilter(
-	'editor.BlockEdit',
-	'example/add-image-inspector-controls',
-	addImageInspectorControls
-);
-
-/**
- * Add the attributes needed for decorative images.
- *
- * @since 0.1.0
- * @param {Object} settings
- */
-function addAttributes( settings ) {
-	if ( 'core/image' !== settings.name ) {
-		return settings;
-	}
-
-	const imageAttributes = {
-		isDecorative: {
-			type: 'boolean',
-			default: false,
-		},
-	};
-
-	const newSettings = {
-		...settings,
-		attributes: {
-			...settings.attributes,
-			...imageAttributes,
-		},
-	};
-
-	return newSettings;
-}
-
-addFilter(
-	'blocks.registerBlockType',
-	'enable-button-icons/add-attributes',
-	addAttributes
-);
-
 /**
  * Adds the role attribute to img elements in the block's Save function for
  * accessibility purposes.
@@ -125,7 +114,6 @@ addFilter(
  * This function iterates over the children of a given element and adds the
  * role="presentation" attribute to img elements if they are marked as decorative.
  *
- * @since 0.1.0
  * @param {Object} element    The React element to be modified.
  * @param {Object} blockType  The type of the block.
  * @param {Object} attributes The block attributes.
@@ -134,16 +122,21 @@ addFilter(
 function addAccessibilityRoleToImages( element, blockType, attributes ) {
 	const { name } = blockType;
 	const { isDecorative } = attributes;
+	const elementChildren = element?.props?.children;
 
 	const updateChildrenWithRole = ( children ) => {
 		return Children.map( children, ( child ) => {
-			// Check if the child is of type 'img'.
-			if ( child?.type === 'img' ) {
+			if ( ! isValidElement( child ) ) {
+				return child;
+			}
+
+			// Check if the child is of type 'img'. The Image block only has one img child.
+			if ( child.type === 'img' ) {
 				return cloneElement( child, { role: 'presentation' } );
 			}
 
 			// If the current child has children of its own, recurse over them.
-			if ( child?.props?.children ) {
+			if ( child.props.children ) {
 				return cloneElement( child, {
 					children: updateChildrenWithRole( child.props.children ),
 				} );
@@ -153,27 +146,24 @@ function addAccessibilityRoleToImages( element, blockType, attributes ) {
 		} );
 	};
 
-	// Skip if element is undefined.
-	if ( ! element ) {
-		return;
-	}
-
-	// Apply the correct role to 'img' elements.
-	if ( 'core/image' === name && isDecorative ) {
+	// Apply the correct role to child 'img' elements if the block is a decorative Image block.
+	if ( 'core/image' === name && isDecorative &&  elementChildren ) {
 		return cloneElement( element, {
-			children: updateChildrenWithRole( element.props.children ),
+			children: updateChildrenWithRole( elementChildren ),
 		} );
 	}
 
 	return element;
 }
 
-addFilter(
-	'blocks.getSaveElement',
-	'example/add-accessibility-role-to-images',
-	addAccessibilityRoleToImages
-);
-
+/**
+ * Adds the role="presentation" attribute to Image blocks marked as decorative.
+ *
+ * @param {Object} props       The current properties of the block's root element.
+ * @param {Object} blockType   The block type definition object.
+ * @param {Object} attributes  The block's attributes.
+ * @return {Object}            The modified properties with the `role` attribute added, or the original properties if conditions are not met.
+ */
 function addAccessibilityRoleToImageBlocks( props, blockType, attributes ) {
 	const { name } = blockType;
 	const { isDecorative } = attributes;
@@ -188,8 +178,34 @@ function addAccessibilityRoleToImageBlocks( props, blockType, attributes ) {
 	return props;
 }
 
-addFilter(
-	'blocks.getSaveContent.extraProps',
-	'example/add-accessibility-role-to-image-blocks',
-	addAccessibilityRoleToImageBlocks
-);
+// Only register if the example is enabled.
+if ( window.extendingBlocksDecorativeImages ) {
+
+	// Add custom attribute.
+	addFilter(
+		'blocks.registerBlockType',
+		'developer-hours-examples/add-is-decorative-attribute',
+		addIsDecorativeAttribute
+	);
+
+	// Add block inspector panel.
+	addFilter(
+		'editor.BlockEdit',
+		'developer-hours-examples/add-image-inspector-controls',
+		addImageInspectorControls
+	);
+
+	// Add role attribute to save function.
+	addFilter(
+		'blocks.getSaveElement',
+		'developer-hours-examples/add-accessibility-role-to-images',
+		addAccessibilityRoleToImages
+	);
+
+	// This filter is for demonstration purposes only.
+	// addFilter(
+	// 	'blocks.getSaveContent.extraProps',
+	// 	'example/add-accessibility-role-to-image-blocks',
+	// 	addAccessibilityRoleToImageBlocks
+	// );
+}

@@ -128,6 +128,30 @@ function dhe_register_settings() {
 		)
 	);
 
+	add_settings_section(
+		'dhe_extending_blocks',
+		__( 'Extending blocks', 'developer-hours-examples' ),
+		function() { 
+			echo __( 'Enable block extensibility examples.', 'developer-hours-examples' ); 
+		},
+		'developer-hours-examples'
+	);
+
+	add_settings_field(
+		'dhe-extending-blocks-decorative-images',
+		__( 'Decorative Images', 'developer-hours-examples' ),
+		'dhe_display_example_field',
+		'developer-hours-examples',
+		'dhe_extending_blocks',
+		array(
+			'label' => sprintf(
+				__( 'Enable a block extensibility example that adds a decorative image setting to Image blocks for accessibility. <a href="%s" target="_blank">View source code</a>.', 'developer-hours-examples' ),
+				esc_url( 'https://github.com/ndiego/developer-hours-examples/tree/main/src/examples/extending-blocks/decorative-images.js' )
+			),
+			'id'    => 'dhe-extending-blocks-decorative-images',
+		)
+	);
+
 	register_setting( 'developer-hours-examples', 'developer-hours-examples' );
 }
 add_action( 'admin_init', 'dhe_register_settings' );
